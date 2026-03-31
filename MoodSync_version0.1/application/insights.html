@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Insights - MoodSync</title>
+  <link rel="stylesheet" href="css/insights.css">
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- HEADER (SAMAKAN DENGAN HISTORY) -->
+    <header class="header">
+      <div class="profile">
+        <div class="avatar"></div>
+        <h1 class="app-title">MoodSync</h1>
+      </div>
+      <button class="icon-btn">🔔</button>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- PAGE TITLE -->
+      <section class="page-title">
+        <h2>Laporan Mingguan</h2>
+        <p>Rangkuman perjalananmu dalam seminggu penuh ini</p>
+      </section>
+
+      <!-- ================= BACKEND READY ================= -->
+      <!-- Semua section ini bisa di-loop / di-bind dari backend -->
+
+      <!-- MOOD FLOW -->
+      <section class="card">
+        <div class="card-header">
+          <h3>Alur Emosi</h3>
+          <span class="badge">7 Hari Terakhir</span>
+        </div>
+
+        <div class="chart-bar">
+          <!-- nanti loop -->
+          <div class="bar" style="height:40%"></div>
+          <div class="bar" style="height:60%"></div>
+          <div class="bar" style="height:35%"></div>
+          <div class="bar active" style="height:90%"></div>
+          <div class="bar" style="height:55%"></div>
+          <div class="bar active" style="height:70%"></div>
+          <div class="bar" style="height:65%"></div>
+        </div>
+      </section>
+
+      <!-- ACTIVITY -->
+      <section class="card">
+        <h3>Aktivitas</h3>
+
+        <div class="donut">72%</div>
+
+        <div class="metric">
+          <span>Meditation</span>
+          <span>12h</span>
+        </div>
+        <div class="metric">
+          <span>Deep Work</span>
+          <span>5h</span>
+        </div>
+        <div class="metric">
+          <span>Rest</span>
+          <span>3h</span>
+        </div>
+      </section>
+
+      <!-- SLEEP -->
+      <section class="card">
+        <h3>Sleep Quality</h3>
+        <p>8.2 / 10</p>
+        <div class="progress">
+          <span style="width:82%"></span>
+        </div>
+      </section>
+
+      <!-- MINDFULNESS -->
+      <section class="card">
+        <h3>Mindfulness Gap</h3>
+        <p>2.4 h</p>
+        <div class="progress">
+          <span style="width:40%"></span>
+        </div>
+      </section>
+
+      <!-- STREAK -->
+      <section class="card">
+        <h3>Consistency Streak</h3>
+        <p class="big-number">12</p>
+        <span>days</span>
+        <small>+3 from last week</small>
+      </section>
+
+    </main>
+
+    <!-- NAVBAR (SAMA DI SEMUA PAGE) -->
+    <nav class="navbar">
+      <button onclick="window.location.href='today.html'">TODAY</button>
+      <button onclick="window.location.href='history.html'">HISTORY</button>
+      <button class="active" onclick="window.location.href='insights.html'">INSIGHTS</button>
+      <button onclick="window.location.href='settings.html'">SETTINGS</button>
+    </nav>
+
+  </div>
+
+</body>
+</html>

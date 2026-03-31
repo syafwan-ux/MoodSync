@@ -1,0 +1,360 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #f5f3f0;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  background: #f5f3f0;
+  padding-bottom: 90px;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #d0d0d0;
+}
+
+.app-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #556b62;
+}
+
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  font-size: 18px;
+}
+
+.icon-btn:hover {
+  background: #e6e6e6;
+}
+
+/* MAIN */
+.main {
+  padding: 0 20px 20px;
+}
+
+.page-title {
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
+
+.page-title h2 {
+  font-size: 40px;
+  font-weight: 900;
+  color: #2c2c2c;
+  margin-bottom: 8px;
+}
+
+.page-title p {
+  color: #777;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+/* TIMELINE */
+.timeline {
+  position: relative;
+  padding-left: 15px;
+  margin-bottom: 40px;
+}
+
+/* vertical line */
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 28px;
+  width: 2px;
+  height: 100%;
+  background: #d8d2c8;
+}
+
+/* DAY GROUP */
+.timeline-day {
+  margin-bottom: 40px;
+}
+
+/* Day label */
+.day-label {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.day-number {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: #b8e6d5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 800;
+  color: #2f4a40;
+  z-index: 2;
+}
+
+.day-number.day-gray {
+  background: #e1ddd7;
+  color: #444;
+}
+
+.day-text h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #333;
+}
+
+.day-text span {
+  font-size: 12px;
+  color: #888;
+  letter-spacing: 1px;
+}
+
+/* Content under each day */
+.day-content {
+  margin-left: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ENTRY CARD */
+.entry-card {
+  background: #f1efec;
+  border-radius: 22px;
+  padding: 18px;
+  border: 1px solid rgba(0,0,0,0.03);
+}
+
+.entry-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.entry-left {
+  display: flex;
+  gap: 12px;
+}
+
+.entry-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.entry-title h4 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.entry-title p {
+  font-size: 13px;
+  color: #777;
+  line-height: 1.5;
+  max-width: 200px;
+}
+
+.entry-time {
+  background: #e7e2dc;
+  padding: 8px 10px;
+  border-radius: 14px;
+  text-align: right;
+  min-width: 80px;
+  height: fit-content;
+}
+
+.entry-time .time {
+  display: block;
+  font-size: 12px;
+  font-weight: bold;
+  color: #444;
+}
+
+.entry-time .label {
+  display: block;
+  font-size: 11px;
+  color: #777;
+}
+
+/* TAGS */
+.entry-tags {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 11px;
+  font-weight: 700;
+  background: #d8e4f5;
+  color: #3a4f75;
+  padding: 7px 12px;
+  border-radius: 20px;
+}
+
+/* INSIGHT CARD */
+.insight-card {
+  background: linear-gradient(to bottom right, #3f5f55, #2f4a40);
+  color: white;
+  padding: 28px 22px;
+  border-radius: 28px;
+  margin-bottom: 18px;
+}
+
+.insight-card h3 {
+  font-size: 22px;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+.insight-card p {
+  font-size: 13px;
+  line-height: 1.6;
+  opacity: 0.9;
+  margin-bottom: 18px;
+}
+
+.insight-btn {
+  background: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #2f4a40;
+}
+
+/* STREAK CARD */
+.streak-card {
+  background: #f4e4a3;
+  padding: 22px;
+  border-radius: 26px;
+  margin-bottom: 20px;
+}
+
+.streak-card h3 {
+  font-size: 18px;
+  font-weight: 900;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.streak-card p {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+
+.streak-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.streak-days {
+  display: flex;
+  gap: 8px;
+}
+
+.streak-days span {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.streak-days .active-day {
+  background: #2f4a40;
+  color: white;
+}
+
+.streak-number {
+  font-size: 40px;
+  font-weight: 900;
+  color: #333;
+}
+
+/* NAVBAR */
+.navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.navbar button {
+  border: none;
+  background: transparent;
+  padding: 10px 18px;
+  margin: 0 5px;
+  cursor: pointer;
+  font-weight: 700;
+  color: gray;
+  border-radius: 30px;
+  transition: 0.2s;
+}
+
+.navbar button.active {
+  background: #b8e6d5;
+  color: #333;
+}
+
+.navbar button:hover {
+  color: black;
+}

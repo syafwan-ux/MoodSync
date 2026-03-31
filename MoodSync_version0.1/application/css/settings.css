@@ -1,0 +1,174 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #f5f3f0;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 420px;
+  min-height: 100vh;
+  background: #f5f3f0;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 90px;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: orange;
+}
+
+.header h1 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #444;
+}
+
+.notif-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+}
+
+.notif-btn:hover {
+  background: #e5e5e5;
+}
+
+/* MAIN */
+.main {
+  padding: 20px;
+  flex: 1;
+}
+
+.main h2 {
+  font-size: 30px;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: gray;
+  margin-bottom: 25px;
+  letter-spacing: 1px;
+}
+
+/* CARDS */
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 20px;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.card h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.card p {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+/* BUTTONS */
+.edit-btn {
+  margin-top: 10px;
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  background: #c5d9f0;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.export-btn {
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  background: #b8e6d5;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.danger-btn {
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  background: #f0c5c5;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* SETTINGS ROW */
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.setting-row:last-child {
+  border-bottom: none;
+}
+
+/* NAVBAR */
+.navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.navbar button {
+  border: none;
+  background: transparent;
+  padding: 10px 18px;
+  margin: 0 5px;
+  cursor: pointer;
+  font-weight: 600;
+  color: gray;
+  border-radius: 30px;
+  transition: 0.2s;
+}
+
+.navbar button.active {
+  background: #b8e6d5;
+  color: #333;
+}
+
+.navbar button:hover {
+  color: black;
+}

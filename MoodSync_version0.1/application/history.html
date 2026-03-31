@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="css/history.css">
+  <title>History - MoodSync</title>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="profile">
+        <div class="avatar"></div>
+        <h1 class="app-title">MoodSync</h1>
+      </div>
+
+      <button class="icon-btn">🔔</button>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- PAGE TITLE -->
+      <section class="page-title">
+        <h2>History</h2>
+        <p>Jejak perjalananmu menuju kedamaian dicatat disini</p>
+      </section>
+
+      <!-- TIMELINE -->
+      <section class="timeline">
+
+        <!-- DAY GROUP (backend nanti loop per tanggal) -->
+        <div class="timeline-day">
+
+          <div class="day-label">
+            <div class="day-number">24</div>
+            <div class="day-text">
+              <h3>Hari ini</h3>
+              <span>MARET 2026</span>
+            </div>
+          </div>
+
+          <div class="day-content">
+
+            <!-- ENTRY CARD (backend nanti loop per note) -->
+            <article class="entry-card">
+              <div class="entry-top">
+                <div class="entry-left">
+                  <div class="entry-icon">😌</div>
+                  <div class="entry-title">
+                    <h4>Waktu Santai</h4>
+                    <p>Sore yang tenang setelah bekerja seharian</p>
+                  </div>
+                </div>
+
+                <div class="entry-time">
+                  <span class="time">2:30 PM</span>
+                  <span class="label">Hari ini</span>
+                </div>
+              </div>
+
+              <div class="entry-tags">
+                <span class="tag">📖 READING</span>
+                <span class="tag">☕ TEA BREAK</span>
+              </div>
+            </article>
+
+            <article class="entry-card">
+              <div class="entry-top">
+                <div class="entry-left">
+                  <div class="entry-icon">✨</div>
+                  <div class="entry-title">
+                    <h4>Bahagia</h4>
+                    <p>Baru saja mendapat inspirasi untuk karya tulis baruku</p>
+                  </div>
+                </div>
+
+                <div class="entry-time">
+                  <span class="time">8:15 AM</span>
+                  <span class="label">Hari ini</span>
+                </div>
+              </div>
+
+              <div class="entry-tags">
+                <span class="tag">🚶 MORNING WALK</span>
+                <span class="tag">🧘 MEDITATION</span>
+              </div>
+            </article>
+
+          </div>
+        </div>
+
+
+        <!-- SECOND DAY GROUP -->
+        <div class="timeline-day">
+
+          <div class="day-label">
+            <div class="day-number day-gray">23</div>
+            <div class="day-text">
+              <h3>Kemarin</h3>
+              <span>MARET 2026</span>
+            </div>
+          </div>
+
+          <div class="day-content">
+
+            <article class="entry-card">
+              <div class="entry-top">
+                <div class="entry-left">
+                  <div class="entry-icon">🌙</div>
+                  <div class="entry-title">
+                    <h4>Puas walaupun lelah</h4>
+                    <p>Satu lagi hari yang lelah ditutup dengan sesi yoga singkat</p>
+                  </div>
+                </div>
+
+                <div class="entry-time">
+                  <span class="time">10:45 PM</span>
+                  <span class="label">Yesterday</span>
+                </div>
+              </div>
+
+              <div class="entry-tags">
+                <span class="tag">🧘 EVENING YOGA</span>
+              </div>
+            </article>
+
+            <article class="entry-card">
+              <div class="entry-top">
+                <div class="entry-left">
+                  <div class="entry-icon">😎</div>
+                  <div class="entry-title">
+                    <h4>Produktif</h4>
+                    <p>Baru saja menyelesaikan pekerjaan lebih awal dari jadwal</p>
+                  </div>
+                </div>
+
+                <div class="entry-time">
+                  <span class="time">4:20 PM</span>
+                  <span class="label">Yesterday</span>
+                </div>
+              </div>
+
+              <div class="entry-tags">
+                <span class="tag">🎧 MUSIC</span>
+                <span class="tag">💻 DEEP WORK</span>
+              </div>
+            </article>
+
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- INSIGHT CARD -->
+      <section class="insight-card">
+        <h3>Pola Mingguan</h3>
+        <p>
+          Kamu mencatat 4 kali "Bahagia" di minggu ini bersamaan dengan
+          semakin seringnya kamu berjalan kaki
+        </p>
+
+        <button class="insight-btn">View Full Insights</button>
+      </section>
+
+      <!-- STREAK CARD -->
+      <section class="streak-card">
+        <h3>Journaling Streak</h3>
+        <p>Kamu sekarang telah mencatat journal harian 12 kali berturut-turut</p>
+
+        <div class="streak-bottom">
+          <div class="streak-days">
+            <span>M</span>
+            <span>T</span>
+            <span>W</span>
+            <span class="active-day">T</span>
+          </div>
+
+          <div class="streak-number">12</div>
+        </div>
+      </section>
+
+    </main>
+
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+      <button onclick="window.location.href='today.html'">TODAY</button>
+      <button class="active" onclick="window.location.href='history.html'">HISTORY</button>
+      <button onclick="window.location.href='insights.html'">INSIGHTS</button>
+      <button onclick="window.location.href='settings.html'">SETTINGS</button>
+    </nav>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/settings.css">
+    <title>Settings - MoodSync</title>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <header class="header">
+            <div class="logo"></div>
+            <h1>MoodSync</h1>
+            <button class="notif-btn">Notification</button>
+        </header>
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <h2>Settings</h2>
+            <p class="subtitle">ATUR PROFIL DAN PREFERENSI APLIKASIMU</p>
+
+            <!-- PROFILE -->
+            <div class="card">
+                <h3>Profil</h3>
+                <p><b>Nama:</b> Andini Maharani</p>
+                <p><b>Email:</b> sucipto.bagus@moodsync.com</p>
+                <button class="edit-btn">Edit Profil</button>
+            </div>
+
+            <!-- NOTIFICATION -->
+            <div class="card">
+                <h3>Notifikasi</h3>
+
+                <div class="setting-row">
+                    <span>Pengingat Harian</span>
+                    <input type="checkbox" checked>
+                </div>
+
+                <div class="setting-row">
+                    <span>Laporan Mingguan</span>
+                    <input type="checkbox">
+                </div>
+            </div>
+
+            <!-- PRIVACY -->
+            <div class="card">
+                <h3>Data & Privacy</h3>
+                <button class="export-btn">Export Data</button>
+                <button class="danger-btn">Delete Account</button>
+            </div>
+
+        </main>
+
+        <!-- NAVBAR -->
+        <nav class="navbar">
+            <button onclick="window.location.href='today.html'">TODAY</button>
+            <button onclick="window.location.href='history.html'">HISTORY</button>
+            <button onclick="window.location.href='insights.html'">INSIGHTS</button>
+            <button class="active" onclick="window.location.href='settings.html'">SETTINGS</button>
+        </nav>
+
+    </div>
+
+</body>
+</html>
