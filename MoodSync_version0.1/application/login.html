@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Login ke MoodSync — catat dan pantau perjalanan emosimu setiap hari.">
     <link rel="stylesheet" href="css/login.css">
-    <title>Log in Page</title>
-    
+    <title>Log in — MoodSync</title>
 </head>
 <body>
 <div class="flex-container">
 
     <div class="logo-container">
-    <div class="logo-placeholder">
-         <img src="assets/svg/Icon-5.svg" class="icon"></img>
+        <div class="logo-placeholder">
+            <img src="assets/svg/Icon-5.svg" class="icon" alt="MoodSync Logo">
+        </div>
     </div>
-    </div>
+
     <!-- Header -->
     <div class="header">
         <h1>MoodSync</h1>
@@ -27,14 +28,17 @@
         </div>
 
         <!-- Form -->
-        <form>
+        <form id="login-form" onsubmit="handleLogin(event); return false;">
             <label for="email">Email address</label>
-            <input id="email" type="email" placeholder="example@canvas.com" />
+            <input id="login-email" type="email" placeholder="example@canvas.com" required />
 
             <label for="password">Password</label>
-            <input id="password" type="password" placeholder="Min. 8 characters" />
+            <input id="login-password" type="password" placeholder="Min. 8 characters" required />
 
-            <button type="submit">Login</button>
+            <!-- Error message dari backend C++ -->
+            <p id="login-error" style="display:none; color:#e74c3c; font-size:13px; text-align:center; margin:0;"></p>
+
+            <button id="login-btn" type="submit">Login</button>
         </form>
 
         <!-- Divider -->
@@ -44,10 +48,10 @@
             <div></div>
         </div>
 
-        <!-- Social Buttons -->
+        <!-- Social Buttons (placeholder) -->
         <div class="social-buttons" style="display:flex; gap:10px;">
-            <button>Google</button>
-            <button>Apple</button>
+            <button type="button">Google</button>
+            <button type="button">Apple</button>
         </div>
     </div>
 
@@ -57,5 +61,58 @@
     </div>
 
 </div>
+
+<!-- WebUI JS (disediakan otomatis oleh WebUI) -->
+<script src="/webui.js"></script>
+<!-- MoodSync API Bridge — IPC ke C++ -->
+<script src="js/api.js"></script>
+<script>
+    /**
+     * PROSES LOGIN — Data Binding IPC
+     * 
+     * Alur:
+     * 1. User isi form dan klik Login
+     * 2. JS memanggil webui.call("login", email, password) via api()
+     * 3. C++ handle_login() query SQLite, verifikasi password
+     * 4. C++ return_string(json) → JS menerima hasilnya
+     * 5. Jika ok=true → redirect ke today.html
+     * 6. Jika ok=false → tampilkan pesan error dari C++
+     */
+    async function handleLogin(event) {
+        event.preventDefault();
+
+        const email    = document.getElementById("login-email").value.trim();
+        const password = document.getElementById("login-password").value;
+        const btn      = document.getElementById("login-btn");
+        const errEl    = document.getElementById("login-error");
+
+        // Reset error
+        errEl.style.display = "none";
+        btn.textContent = "Loading...";
+        btn.disabled = true;
+
+        // ── PANGGIL BACKEND C++ via WebUI IPC ───────────────────────────────
+        const res = await Auth.login(email, password);
+        // ────────────────────────────────────────────────────────────────────
+
+        btn.textContent = "Login";
+        btn.disabled = false;
+
+        if (res.ok) {
+            // Login berhasil — navigasi ke halaman utama
+            window.location.href = "today.html";
+        } else {
+            // Tampilkan pesan error yang dikirim oleh C++
+            errEl.textContent = res.message || "Login gagal.";
+            errEl.style.display = "block";
+        }
+    }
+
+    // Jika sudah login, langsung ke today.html
+    window.addEventListener("DOMContentLoaded", async () => {
+        const res = await Auth.getSession();
+        if (res.ok) window.location.href = "today.html";
+    });
+</script>
 </body>
 </html>

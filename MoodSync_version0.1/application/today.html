@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Catat perasaan dan aktivitasmu hari ini di MoodSync.">
     <link rel="stylesheet" href="css/today.css">
-    <title>MoodSync</title>
+    <title>Today — MoodSync</title>
 </head>
 
 <body>
@@ -14,76 +15,249 @@
 
         <!-- HEADER -->
         <header class="header">
-            <div class="logo">
-                <!-- profile circle placeholder -->
+            <div class="logo" id="header-avatar" style="cursor:pointer;" onclick="window.location.href='settings.html'" title="Settings">
+                <!-- Avatar diisi dinamis dari session -->
             </div>
 
             <h1>MoodSync</h1>
 
-            <button class="notif-btn">
+            <button class="notif-btn" id="notif-btn">
                 Notification
             </button>
         </header>
 
         <!-- MAIN CONTENT -->
-        <main class="main">
+        <main class="main" id="main-content">
 
             <p class="subtitle">HARI INI AKAN MENJADI HARIMU...</p>
 
             <h2>Bagaimana Perasaanmu hari ini?</h2>
 
             <!-- MOOD GRID -->
-            <div class="mood-grid">
-                <button class="mood">Biasa Saja</button>
-                <button class="mood">Sedih</button>
-                <button class="mood">Bahagia</button>
-                <button class="mood">Senang</button>
-                <button class="mood">Marah</button>
-                <button class="mood">Mengantuk</button>
+            <div class="mood-grid" id="mood-grid">
+                <!-- Diisi dinamis dari C++ via get_activities -->
             </div>
 
             <h3>Apa yang membuatmu sibuk hari ini?</h3>
 
             <!-- ACTIVITY BUTTONS -->
-            <div class="activity-list">
-                <div class="row">
-                    <button>Bekerja</button>
-                    <button>Sosial</button>
-                </div>
-                <div class="row">
-                    <button>Tidur</button>
-                    <button>Olahraga</button>
-                </div>
-                <div class="row">
-                    <button>Makanan</button>
-                    <button>Zen</button>
-                </div>
-                <div class="row">
-                    <button>Kreativitas</button>
-                    <button>Hal lain</button>
-                </div>
+            <div class="activity-list" id="activity-list">
+                <!-- Diisi dinamis dari C++ via get_activities -->
             </div>
 
             <h3>Bagikan Ceritamu!</h3>
 
             <!-- NOTE -->
-            <textarea placeholder="Ini opsional ya...."></textarea>
+            <textarea id="mood-story" placeholder="Ini opsional ya...."></textarea>
 
-            <button class="save-btn">
+            <button class="save-btn" id="save-btn" onclick="handleSaveMood()">
                 Simpan Catatan Harian
             </button>
+
+            <!-- Status banner jika sudah ada entry hari ini -->
+            <div id="already-saved-banner" style="display:none;
+                background: linear-gradient(135deg, #7BC67E, #4CAF50);
+                color: white; border-radius: 12px; padding: 12px 16px;
+                text-align: center; font-family: 'Manrope', sans-serif;
+                font-weight: 600; margin-top: 8px;">
+                ✅ Kamu sudah mencatat hari ini! Kamu bisa update lagi jika mau.
+            </div>
 
         </main>
 
         <!-- NAVBAR -->
         <nav class="navbar">
-            <button onclick="window.location.href='today.html'">TODAY</button>
+            <button class="active" onclick="window.location.href='today.html'">TODAY</button>
             <button onclick="window.location.href='history.html'">HISTORY</button>
             <button onclick="window.location.href='insights.html'">INSIGHTS</button>
             <button onclick="window.location.href='settings.html'">SETTINGS</button>
         </nav>
 
     </div>
+
+<!-- WebUI JS -->
+<script src="/webui.js"></script>
+<!-- MoodSync API Bridge — IPC ke C++ -->
+<script src="js/api.js"></script>
+<script>
+    /* ─────────────────────────────────────────────────────────────────────────
+     * TODAY PAGE — Data Binding IPC
+     *
+     * Binding yang digunakan:
+     *   get_session      → cek siapa yang login (C++ handle_get_session)
+     *   get_activities   → ambil daftar aktivitas dari SQLite (C++ handle_get_activities)
+     *   get_mood_today   → cek entry hari ini dari SQLite (C++ handle_get_mood_today)
+     *   save_mood        → simpan mood ke SQLite (C++ handle_save_mood)
+     * ───────────────────────────────────────────────────────────────────────── */
+
+    // State UI
+    let selectedMoodLevel = 0;
+    let selectedActivities = new Set();
+
+    // Daftar mood yang bisa dipilih
+    const MOODS = [
+        { level: 1, label: "Biasa Saja", emoji: "😐" },
+        { level: 2, label: "Sedih",      emoji: "😢" },
+        { level: 3, label: "Bahagia",    emoji: "😊" },
+        { level: 4, label: "Senang",     emoji: "✨" },
+        { level: 5, label: "Marah",      emoji: "😡" },
+        { level: 6, label: "Mengantuk",  emoji: "😴" }
+    ];
+
+    // Render mood buttons
+    function renderMoodGrid() {
+        const grid = document.getElementById("mood-grid");
+        grid.innerHTML = "";
+        MOODS.forEach(m => {
+            const btn = document.createElement("button");
+            btn.className = "mood";
+            btn.id = `mood-btn-${m.level}`;
+            btn.innerHTML = `<span class="mood-emoji">${m.emoji}</span> ${m.label}`;
+            btn.onclick = () => selectMood(m.level, btn);
+            grid.appendChild(btn);
+        });
+    }
+
+    function selectMood(level, btn) {
+        // Hapus selected dari semua mood button
+        document.querySelectorAll(".mood-grid .mood").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        selectedMoodLevel = level;
+    }
+
+    // Render activity buttons dari data C++ (SQLite)
+    function renderActivities(activities) {
+        const list = document.getElementById("activity-list");
+        list.innerHTML = "";
+
+        let row = null;
+        activities.forEach((act, i) => {
+            if (i % 2 === 0) {
+                row = document.createElement("div");
+                row.className = "row";
+                list.appendChild(row);
+            }
+            const btn = document.createElement("button");
+            btn.id = `act-btn-${act.id}`;
+            btn.textContent = act.name;
+            btn.dataset.actId = act.id;
+            btn.onclick = () => toggleActivity(act.id, btn);
+            row.appendChild(btn);
+        });
+    }
+
+    function toggleActivity(id, btn) {
+        if (selectedActivities.has(id)) {
+            selectedActivities.delete(id);
+            btn.classList.remove("selected");
+        } else {
+            selectedActivities.add(id);
+            btn.classList.add("selected");
+        }
+    }
+
+    /**
+     * Reset form ke kondisi awal setelah berhasil menyimpan
+     */
+    function resetForm() {
+        // Reset mood selection
+        selectedMoodLevel = 0;
+        document.querySelectorAll(".mood-grid .mood").forEach(b => b.classList.remove("selected"));
+
+        // Reset activity selection
+        selectedActivities.clear();
+        document.querySelectorAll(".activity-list button").forEach(b => b.classList.remove("selected"));
+
+        // Kosongkan textarea
+        document.getElementById("mood-story").value = "";
+
+        // Sembunyikan banner "sudah disimpan"
+        document.getElementById("already-saved-banner").style.display = "none";
+    }
+
+    // Jika sudah ada entry hari ini, prefill UI
+    function prefillFromEntry(entry) {
+        // Select mood
+        const moodBtn = document.getElementById(`mood-btn-${entry.mood_level}`);
+        if (moodBtn) selectMood(entry.mood_level, moodBtn);
+
+        // Isi story
+        document.getElementById("mood-story").value = entry.story || "";
+
+        // Select aktivitas
+        if (entry.activities) {
+            // entry.activities adalah "Bekerja,Sosial,..." tapi kita perlu ID
+            // Karena query JOIN sudah GROUP_CONCAT name, kita approx dari nama
+            // (Pada query get_mood_today kita bisa tambahkan ID, tapi untuk
+            //  simplisitas kita hanya tampilkan banner)
+        }
+
+        // Tampilkan banner sudah disimpan
+        document.getElementById("already-saved-banner").style.display = "block";
+    }
+
+    /**
+     * SIMPAN MOOD — Inti IPC: JS → C++ → SQLite
+     */
+    async function handleSaveMood() {
+        if (selectedMoodLevel === 0) {
+            UI.showToast("Pilih perasaanmu terlebih dahulu!", "error");
+            return;
+        }
+
+        const story = document.getElementById("mood-story").value.trim();
+        const actIds = Array.from(selectedActivities);
+
+        const btn = document.getElementById("save-btn");
+        btn.textContent = "Menyimpan...";
+        btn.disabled = true;
+
+        // ── PANGGIL BACKEND C++ via WebUI IPC ────────────────────────────────
+        // C++ menerima: (mood_level: int, story: string, activities: JSON string)
+        // C++ menyimpan ke tabel isi_catatan dan mood_activity di SQLite
+        const res = await Mood.saveMood(selectedMoodLevel, story, actIds);
+        // ─────────────────────────────────────────────────────────────────────
+
+        btn.textContent = "Simpan Catatan Harian";
+        btn.disabled = false;
+
+        if (res.ok) {
+            UI.showToast(res.message || "Catatan tersimpan! ✅", "success");
+            // Bersihkan form setelah berhasil disimpan
+            resetForm();
+        } else {
+            UI.showToast(res.message || "Gagal menyimpan.", "error");
+        }
+    }
+
+    // ── INISIALISASI HALAMAN ──────────────────────────────────────────────────
+    window.addEventListener("DOMContentLoaded", async () => {
+        // 1. Cek autentikasi — redirect jika belum login
+        const user = await Auth.requireAuth();
+        if (!user) return;
+
+        // Set avatar awal
+        const avatar = document.getElementById("header-avatar");
+        avatar.textContent = user.username.charAt(0).toUpperCase();
+        avatar.style.cssText += `
+            display:flex; width:36px; height:36px; border-radius:50%;
+            background: linear-gradient(135deg,#667eea,#764ba2);
+            color:white; font-weight:700; font-size:16px;
+            align-items:center; justify-content:center;
+        `;
+
+        // 2. Render mood grid
+        renderMoodGrid();
+
+        // 3. Ambil aktivitas dari C++ (SQLite) — IPC call
+        const actRes = await Mood.getActivities();
+        if (actRes.ok) renderActivities(actRes.activities);
+
+        // 4. Cek apakah sudah ada entry hari ini — IPC call
+        const todayRes = await Mood.getMoodToday();
+        if (todayRes.ok) prefillFromEntry(todayRes.entry);
+    });
+</script>
 
 </body>
 </html>

@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Atur profil dan preferensi aplikasi MoodSync kamu.">
     <link rel="stylesheet" href="css/settings.css">
-    <title>Settings - MoodSync</title>
+    <title>Settings — MoodSync</title>
 </head>
-
 <body>
 
     <div class="container">
 
         <!-- HEADER -->
         <header class="header">
-            <div class="logo"></div>
+            <div class="logo" id="header-logo"></div>
             <h1>MoodSync</h1>
-            <button class="notif-btn">Notification</button>
+            <button class="notif-btn" id="notif-btn">Notification</button>
         </header>
 
         <!-- MAIN -->
@@ -24,34 +24,48 @@
             <h2>Settings</h2>
             <p class="subtitle">ATUR PROFIL DAN PREFERENSI APLIKASIMU</p>
 
-            <!-- PROFILE -->
+            <!-- PROFILE — diisi dari session C++ -->
             <div class="card">
                 <h3>Profil</h3>
-                <p><b>Nama:</b> Andini Maharani</p>
-                <p><b>Email:</b> sucipto.bagus@moodsync.com</p>
-                <button class="edit-btn">Edit Profil</button>
+                <p><b>Nama:</b> <span id="profile-name">Memuat...</span></p>
+                <p><b>Email:</b> <span id="profile-email">Memuat...</span></p>
+                <button class="edit-btn" onclick="toggleEditProfile()">Edit Profil</button>
             </div>
 
-            <!-- NOTIFICATION -->
+            <!-- NOTIFICATION — state dari SQLite via C++ -->
             <div class="card">
                 <h3>Notifikasi</h3>
 
                 <div class="setting-row">
                     <span>Pengingat Harian</span>
-                    <input type="checkbox" checked>
+                    <input type="checkbox" id="daily-reminder">
                 </div>
 
                 <div class="setting-row">
                     <span>Laporan Mingguan</span>
-                    <input type="checkbox">
+                    <input type="checkbox" id="weekly-report">
                 </div>
+
+                <button class="edit-btn" id="save-settings-btn"
+                    onclick="handleSaveSettings()" style="margin-top:8px;">
+                    Simpan Pengaturan
+                </button>
+                <p id="settings-msg" style="display:none; font-size:13px; color:#4CAF50; margin:4px 0;"></p>
             </div>
 
-            <!-- PRIVACY -->
+            <!-- DATA & PRIVACY -->
             <div class="card">
-                <h3>Data & Privacy</h3>
-                <button class="export-btn">Export Data</button>
-                <button class="danger-btn">Delete Account</button>
+                <h3>Data &amp; Privacy</h3>
+                <button class="export-btn" onclick="handleExportData()">Export Data</button>
+                <button class="danger-btn" onclick="handleDeleteAccount()">Delete Account</button>
+            </div>
+
+            <!-- LOGOUT -->
+            <div class="card" style="text-align:center;">
+                <button class="danger-btn" onclick="handleLogout()"
+                    style="background:#555; width:100%; max-width:300px;">
+                    🚪 Logout
+                </button>
             </div>
 
         </main>
@@ -65,6 +79,131 @@
         </nav>
 
     </div>
+
+<!-- WebUI JS -->
+<script src="/webui.js"></script>
+<!-- MoodSync API Bridge — IPC ke C++ -->
+<script src="js/api.js"></script>
+<script>
+    /* ─────────────────────────────────────────────────────────────────────────
+     * SETTINGS PAGE — Data Binding IPC
+     *
+     * Binding yang digunakan:
+     *   get_settings   → C++ ambil user profile + settings dari SQLite
+     *   save_settings  → C++ simpan daily_reminder + weekly_report ke SQLite
+     *   delete_account → C++ hapus semua data user dari SQLite
+     *   logout         → C++ clear session memory
+     * ───────────────────────────────────────────────────────────────────────── */
+
+    /**
+     * SIMPAN SETTINGS — IPC ke C++
+     * C++ akan UPDATE user_settings di SQLite berdasarkan user_id session
+     */
+    async function handleSaveSettings() {
+        const daily  = document.getElementById("daily-reminder").checked;
+        const weekly = document.getElementById("weekly-report").checked;
+        const btn    = document.getElementById("save-settings-btn");
+        const msg    = document.getElementById("settings-msg");
+
+        btn.textContent = "Menyimpan...";
+        btn.disabled = true;
+
+        // ── PANGGIL BACKEND C++ via WebUI IPC ────────────────────────────────
+        const res = await Settings.save(daily, weekly);
+        // ─────────────────────────────────────────────────────────────────────
+
+        btn.textContent = "Simpan Pengaturan";
+        btn.disabled = false;
+
+        msg.style.display = "block";
+        msg.style.color = res.ok ? "#4CAF50" : "#e74c3c";
+        msg.textContent = res.message || (res.ok ? "Tersimpan!" : "Gagal.");
+        setTimeout(() => { msg.style.display = "none"; }, 2000);
+    }
+
+    /**
+     * LOGOUT — IPC ke C++
+     * C++ clear session (g_session_user_id = 0, dll.)
+     */
+    async function handleLogout() {
+        // ── PANGGIL BACKEND C++ via WebUI IPC ────────────────────────────────
+        await Auth.logout();
+        // ─────────────────────────────────────────────────────────────────────
+        window.location.href = "login.html";
+    }
+
+    /**
+     * HAPUS AKUN — IPC ke C++
+     * C++ hapus semua row dari users, isi_catatan, mood_activity, user_settings
+     */
+    async function handleDeleteAccount() {
+        const confirmed = confirm(
+            "Apakah kamu yakin ingin menghapus akunmu?\n" +
+            "Semua data dan catatan mood akan dihapus permanen."
+        );
+        if (!confirmed) return;
+
+        // ── PANGGIL BACKEND C++ via WebUI IPC ────────────────────────────────
+        const res = await Settings.deleteAccount();
+        // ─────────────────────────────────────────────────────────────────────
+
+        if (res.ok) {
+            alert("Akun berhasil dihapus.");
+            window.location.href = "login.html";
+        } else {
+            alert("Gagal menghapus akun.");
+        }
+    }
+
+    /**
+     * EXPORT DATA — mengambil history dari C++ dan download sebagai JSON
+     */
+    async function handleExportData() {
+        const res = await Mood.getHistory();
+        if (!res.ok || res.entries.length === 0) {
+            alert("Tidak ada data untuk diekspor.");
+            return;
+        }
+        const blob = new Blob([JSON.stringify(res.entries, null, 2)], { type: "application/json" });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement("a");
+        a.href     = url;
+        a.download = "moodsync_export.json";
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function toggleEditProfile() {
+        alert("Fitur edit profil akan segera hadir!");
+    }
+
+    // ── INISIALISASI ──────────────────────────────────────────────────────────
+    window.addEventListener("DOMContentLoaded", async () => {
+        const user = await Auth.requireAuth();
+        if (!user) return;
+
+        // Set logo/avatar
+        const logo = document.getElementById("header-logo");
+        logo.textContent = user.username.charAt(0).toUpperCase();
+        logo.style.cssText += `
+            display:flex; width:36px; height:36px; border-radius:50%;
+            background:linear-gradient(135deg,#667eea,#764ba2);
+            color:white; font-weight:700; font-size:16px;
+            align-items:center; justify-content:center;
+        `;
+
+        // ── AMBIL DATA SETTINGS DARI C++ via IPC ─────────────────────────────
+        const res = await Settings.get();
+        // ─────────────────────────────────────────────────────────────────────
+
+        if (res.ok) {
+            document.getElementById("profile-name").textContent  = res.user.username;
+            document.getElementById("profile-email").textContent = res.user.email;
+            document.getElementById("daily-reminder").checked    = res.settings.daily_reminder;
+            document.getElementById("weekly-report").checked     = res.settings.weekly_report;
+        }
+    });
+</script>
 
 </body>
 </html>

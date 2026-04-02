@@ -109,6 +109,13 @@ body {
   transform: scale(0.97);
 }
 
+.mood.selected {
+  background: #b8e6d5;
+  border: 2px solid #4a6b5c;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(74, 107, 92, 0.2);
+}
+
 /* ACTIVITIES */
 .activity-list .row {
   display: flex;
@@ -130,6 +137,13 @@ body {
 
 .activity-list button:hover {
   background: #f0f0f0;
+}
+
+.activity-list button.selected {
+  background: #4a6b5c;
+  color: white;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(74, 107, 92, 0.3);
 }
 
 /* TEXTAREA */

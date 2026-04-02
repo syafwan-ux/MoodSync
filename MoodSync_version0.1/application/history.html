@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Lihat riwayat catatan mood harianmu di MoodSync.">
   <link rel="stylesheet" href="css/history.css">
-  <title>History - MoodSync</title>
+  <title>History — MoodSync</title>
 </head>
 
 <body>
@@ -14,11 +15,10 @@
     <!-- HEADER -->
     <header class="header">
       <div class="profile">
-        <div class="avatar"></div>
+        <div class="avatar" id="header-avatar"></div>
         <h1 class="app-title">MoodSync</h1>
       </div>
-
-      <button class="icon-btn">🔔</button>
+      <button class="icon-btn" id="notif-btn">🔔</button>
     </header>
 
     <!-- MAIN -->
@@ -30,163 +30,33 @@
         <p>Jejak perjalananmu menuju kedamaian dicatat disini</p>
       </section>
 
-      <!-- TIMELINE -->
-      <section class="timeline">
-
-        <!-- DAY GROUP (backend nanti loop per tanggal) -->
-        <div class="timeline-day">
-
-          <div class="day-label">
-            <div class="day-number">24</div>
-            <div class="day-text">
-              <h3>Hari ini</h3>
-              <span>MARET 2026</span>
-            </div>
-          </div>
-
-          <div class="day-content">
-
-            <!-- ENTRY CARD (backend nanti loop per note) -->
-            <article class="entry-card">
-              <div class="entry-top">
-                <div class="entry-left">
-                  <div class="entry-icon">😌</div>
-                  <div class="entry-title">
-                    <h4>Waktu Santai</h4>
-                    <p>Sore yang tenang setelah bekerja seharian</p>
-                  </div>
-                </div>
-
-                <div class="entry-time">
-                  <span class="time">2:30 PM</span>
-                  <span class="label">Hari ini</span>
-                </div>
-              </div>
-
-              <div class="entry-tags">
-                <span class="tag">📖 READING</span>
-                <span class="tag">☕ TEA BREAK</span>
-              </div>
-            </article>
-
-            <article class="entry-card">
-              <div class="entry-top">
-                <div class="entry-left">
-                  <div class="entry-icon">✨</div>
-                  <div class="entry-title">
-                    <h4>Bahagia</h4>
-                    <p>Baru saja mendapat inspirasi untuk karya tulis baruku</p>
-                  </div>
-                </div>
-
-                <div class="entry-time">
-                  <span class="time">8:15 AM</span>
-                  <span class="label">Hari ini</span>
-                </div>
-              </div>
-
-              <div class="entry-tags">
-                <span class="tag">🚶 MORNING WALK</span>
-                <span class="tag">🧘 MEDITATION</span>
-              </div>
-            </article>
-
-          </div>
+      <!-- TIMELINE — diisi dinamis dari backend C++ -->
+      <section class="timeline" id="timeline-container">
+        <div id="timeline-loading" style="text-align:center; padding:40px; color:#888; font-family:'Manrope',sans-serif;">
+          Memuat catatan...
         </div>
-
-
-        <!-- SECOND DAY GROUP -->
-        <div class="timeline-day">
-
-          <div class="day-label">
-            <div class="day-number day-gray">23</div>
-            <div class="day-text">
-              <h3>Kemarin</h3>
-              <span>MARET 2026</span>
-            </div>
-          </div>
-
-          <div class="day-content">
-
-            <article class="entry-card">
-              <div class="entry-top">
-                <div class="entry-left">
-                  <div class="entry-icon">🌙</div>
-                  <div class="entry-title">
-                    <h4>Puas walaupun lelah</h4>
-                    <p>Satu lagi hari yang lelah ditutup dengan sesi yoga singkat</p>
-                  </div>
-                </div>
-
-                <div class="entry-time">
-                  <span class="time">10:45 PM</span>
-                  <span class="label">Yesterday</span>
-                </div>
-              </div>
-
-              <div class="entry-tags">
-                <span class="tag">🧘 EVENING YOGA</span>
-              </div>
-            </article>
-
-            <article class="entry-card">
-              <div class="entry-top">
-                <div class="entry-left">
-                  <div class="entry-icon">😎</div>
-                  <div class="entry-title">
-                    <h4>Produktif</h4>
-                    <p>Baru saja menyelesaikan pekerjaan lebih awal dari jadwal</p>
-                  </div>
-                </div>
-
-                <div class="entry-time">
-                  <span class="time">4:20 PM</span>
-                  <span class="label">Yesterday</span>
-                </div>
-              </div>
-
-              <div class="entry-tags">
-                <span class="tag">🎧 MUSIC</span>
-                <span class="tag">💻 DEEP WORK</span>
-              </div>
-            </article>
-
-          </div>
-        </div>
-
       </section>
 
-
-      <!-- INSIGHT CARD -->
-      <section class="insight-card">
+      <!-- INSIGHT CARD — diisi dinamis -->
+      <section class="insight-card" id="insight-card" style="display:none;">
         <h3>Pola Mingguan</h3>
-        <p>
-          Kamu mencatat 4 kali "Bahagia" di minggu ini bersamaan dengan
-          semakin seringnya kamu berjalan kaki
-        </p>
-
-        <button class="insight-btn">View Full Insights</button>
+        <p id="insight-text">Memuat insight...</p>
+        <button class="insight-btn" onclick="window.location.href='insights.html'">View Full Insights</button>
       </section>
 
-      <!-- STREAK CARD -->
-      <section class="streak-card">
+      <!-- STREAK CARD — diisi dinamis -->
+      <section class="streak-card" id="streak-card" style="display:none;">
         <h3>Journaling Streak</h3>
-        <p>Kamu sekarang telah mencatat journal harian 12 kali berturut-turut</p>
-
+        <p id="streak-text">Kamu sedang membangun kebiasaan yang luar biasa!</p>
         <div class="streak-bottom">
-          <div class="streak-days">
-            <span>M</span>
-            <span>T</span>
-            <span>W</span>
-            <span class="active-day">T</span>
+          <div class="streak-days" id="streak-days">
+            <!-- diisi dinamis oleh renderStreak() -->
           </div>
-
-          <div class="streak-number">12</div>
+          <div class="streak-number" id="streak-number">0</div>
         </div>
       </section>
 
     </main>
-
 
     <!-- NAVBAR -->
     <nav class="navbar">
@@ -197,6 +67,217 @@
     </nav>
 
   </div>
+
+<!-- WebUI JS -->
+<script src="/webui.js"></script>
+<!-- MoodSync API Bridge — IPC ke C++ -->
+<script src="js/api.js"></script>
+<script>
+  /* ──────────────────────────────────────────────────────────────────────────
+   * HISTORY PAGE — Data Binding IPC
+   *
+   * Binding yang digunakan:
+   *   get_session  → cek login (C++)
+   *   get_history  → ambil semua entri dari SQLite (C++ handle_get_history)
+   *   get_insights → ambil streak dari SQLite (C++ handle_get_insights)
+   * ────────────────────────────────────────────────────────────────────────── */
+
+  // Emoji berdasarkan mood level yang tersimpan di database
+  const MOOD_EMOJI = { 1:"😐", 2:"😢", 3:"😊", 4:"✨", 5:"😡", 6:"😴" };
+  const MOOD_LABEL = { 1:"Biasa Saja", 2:"Sedih", 3:"Bahagia", 4:"Senang", 5:"Marah", 6:"Mengantuk" };
+
+  /**
+   * Render timeline dari array entries yang dikirim oleh C++
+   * Entri dikelompokkan berdasarkan tanggal
+   */
+  function renderTimeline(entries) {
+    const container = document.getElementById("timeline-container");
+    container.innerHTML = "";
+
+    if (entries.length === 0) {
+      container.innerHTML = `
+        <div style="text-align:center; padding:60px 20px; color:#888; font-family:'Manrope',sans-serif;">
+          <div style="font-size:48px; margin-bottom:12px;">📔</div>
+          <p>Belum ada catatan mood.</p>
+          <p style="font-size:13px;">Mulai hari ini dengan mencatat perasaanmu!</p>
+          <button onclick="window.location.href='today.html'"
+            style="margin-top:16px; padding:10px 24px; border-radius:20px;
+            background:linear-gradient(135deg,#667eea,#764ba2); color:white;
+            border:none; cursor:pointer; font-family:'Manrope',sans-serif; font-weight:600;">
+            Mulai Catat
+          </button>
+        </div>
+      `;
+      return;
+    }
+
+    // Kelompokkan per tanggal
+    const groups = {};
+    entries.forEach(entry => {
+      if (!groups[entry.date]) groups[entry.date] = [];
+      groups[entry.date].push(entry);
+    });
+
+    Object.keys(groups).sort((a, b) => b.localeCompare(a)).forEach(date => {
+      const isToday     = UI.isToday(date);
+      const isYesterday = UI.isYesterday(date);
+      const dateLabel   = isToday ? "Hari ini" : (isYesterday ? "Kemarin" : UI.formatDate(date));
+
+      // Ambil day number dan month/year
+      const d = new Date(date + "T00:00:00");
+      const dayNum = d.getDate();
+      const months = ["JANUARI","FEBRUARI","MARET","APRIL","MEI","JUNI",
+                      "JULI","AGUSTUS","SEPTEMBER","OKTOBER","NOVEMBER","DESEMBER"];
+      const monthYear = `${months[d.getMonth()]} ${d.getFullYear()}`;
+
+      const dayGroup = document.createElement("div");
+      dayGroup.className = "timeline-day";
+
+      let cardsHTML = "";
+      groups[date].forEach(entry => {
+        const emoji      = MOOD_EMOJI[entry.mood_level] || "😐";
+        const moodLabel  = MOOD_LABEL[entry.mood_level] || "Unknown";
+        const timeStr    = UI.formatTime(entry.created_at);
+        const activities = entry.activities
+          ? entry.activities.split(",").map(a => `<span class="tag">${a.trim()}</span>`).join("")
+          : "";
+
+        cardsHTML += `
+          <article class="entry-card">
+            <div class="entry-top">
+              <div class="entry-left">
+                <div class="entry-icon">${emoji}</div>
+                <div class="entry-title">
+                  <h4>${moodLabel}</h4>
+                  <p>${entry.story || "—"}</p>
+                </div>
+              </div>
+              <div class="entry-time">
+                <span class="time">${timeStr}</span>
+                <span class="label">${dateLabel}</span>
+              </div>
+            </div>
+            ${activities ? `<div class="entry-tags">${activities}</div>` : ""}
+          </article>
+        `;
+      });
+
+      dayGroup.innerHTML = `
+        <div class="day-label">
+          <div class="day-number${isToday ? "" : " day-gray"}">${dayNum}</div>
+          <div class="day-text">
+            <h3>${dateLabel}</h3>
+            <span>${monthYear}</span>
+          </div>
+        </div>
+        <div class="day-content">${cardsHTML}</div>
+      `;
+      container.appendChild(dayGroup);
+    });
+  }
+
+  function renderStreak(streak, entryDates) {
+    document.getElementById("streak-number").textContent = streak;
+    document.getElementById("streak-text").textContent =
+      streak > 0
+        ? `Kamu sudah mencatat journal harian ${streak} kali berturut-turut 🔥`
+        : "Mulai streak-mu hari ini!";
+
+    // Render 7 hari terakhir dengan emoji 🔥 untuk hari yang streak
+    const streakDaysEl = document.getElementById("streak-days");
+    streakDaysEl.innerHTML = "";
+
+    // Buat set tanggal yang punya entry untuk lookup cepat
+    const datesWithEntry = new Set(entryDates || []);
+
+    // Hitung hari mana saja yang masuk streak (berturut-turut dari hari ini mundur)
+    const streakDates = new Set();
+    if (streak > 0) {
+      for (let i = 0; i < streak; i++) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        streakDates.add(d.toISOString().split("T")[0]);
+      }
+    }
+
+    const DAY_NAMES = ["M","T","W","T","F","S","S"]; // Sun=0..Sat=6 → reindex ke Mon-start
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split("T")[0];
+      const dayIndex = (d.getDay() + 6) % 7; // Senin=0 ... Minggu=6
+      const dayLabel = DAY_NAMES[dayIndex];
+      const isStreak = streakDates.has(dateStr) && datesWithEntry.has(dateStr);
+
+      const span = document.createElement("span");
+      if (isStreak) {
+        span.textContent = "🔥";
+        span.title = dateStr;
+        span.style.cssText = `
+          background: rgba(255,120,0,0.25);
+          border: 1.5px solid rgba(255,120,0,0.5);
+          font-size: 14px;
+          width: 32px;
+          height: 32px;
+        `;
+        span.classList.add("active-day");
+      } else {
+        span.textContent = dayLabel;
+        span.title = dateStr;
+      }
+      streakDaysEl.appendChild(span);
+    }
+
+    const streakCard = document.getElementById("streak-card");
+    streakCard.style.display = "block";
+  }
+
+  function renderInsightCard(totalEntries) {
+    const card = document.getElementById("insight-card");
+    const text = document.getElementById("insight-text");
+    if (totalEntries > 0) {
+      text.textContent = `Kamu sudah mencatat ${totalEntries} catatan mood. Lihat pola lengkapnya di Insights!`;
+      card.style.display = "block";
+    }
+  }
+
+  // ── INISIALISASI ─────────────────────────────────────────────────────────
+  window.addEventListener("DOMContentLoaded", async () => {
+    // 1. Cek autentikasi
+    const user = await Auth.requireAuth();
+    if (!user) return;
+
+    // Set avatar
+    const avatar = document.getElementById("header-avatar");
+    avatar.textContent = user.username.charAt(0).toUpperCase();
+    avatar.style.cssText += `
+      display:flex; width:36px; height:36px; border-radius:50%;
+      background: linear-gradient(135deg,#667eea,#764ba2);
+      color:white; font-weight:700; font-size:16px;
+      align-items:center; justify-content:center;
+    `;
+
+    // 2. Ambil history dari C++ (SQLite) — IPC call utama
+    // C++ query JOIN isi_catatan + mood_activity + activity
+    const histRes = await Mood.getHistory();
+    if (histRes.ok) {
+      renderTimeline(histRes.entries);
+    } else {
+      document.getElementById("timeline-loading").textContent = "Gagal memuat data.";
+    }
+
+    // 3. Ambil insights untuk streak & summary — IPC call ke C++
+    const insRes = await Mood.getInsights();
+    if (insRes.ok) {
+      // Kumpulkan tanggal dari entries untuk menandai hari yang ada catatan
+      const entryDates = (histRes.ok && histRes.entries)
+        ? histRes.entries.map(e => e.date)
+        : [];
+      renderStreak(insRes.streak, entryDates);
+      renderInsightCard(insRes.total_entries);
+    }
+  });
+</script>
 
 </body>
 </html>

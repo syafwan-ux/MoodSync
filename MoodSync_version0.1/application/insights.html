@@ -3,18 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Insights - MoodSync</title>
+  <meta name="description" content="Lihat laporan mingguan dan analisis mood kamu di MoodSync.">
+  <title>Insights — MoodSync</title>
   <link rel="stylesheet" href="css/insights.css">
+  <style>
+    /* Override chart untuk data dinamis */
+    .chart-bar { display: flex; align-items: flex-end; gap: 6px; height: 80px; }
+    .chart-bar .bar {
+        flex: 1; border-radius: 4px 4px 0 0;
+        background: linear-gradient(180deg, #667eea, #764ba2);
+        transition: height 0.6s ease;
+        position: relative;
+        min-height: 4px;
+    }
+    .chart-bar .bar.no-data { background: #e0e0e0; }
+    .chart-bar .bar .bar-label {
+        position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%);
+        font-size: 10px; color: #888; font-family: 'Manrope', sans-serif; white-space: nowrap;
+    }
+    .chart-dates { display:flex; gap:6px; margin-top: 24px; }
+    .chart-dates span { flex:1; text-align:center; font-size:10px; color:#888; font-family:'Manrope',sans-serif; }
+
+    .activity-bar-wrap { margin: 4px 0; }
+    .activity-bar-label { display:flex; justify-content:space-between; font-size:13px; margin-bottom:3px; font-family:'Manrope',sans-serif; }
+    .activity-bar-track { background:#eee; border-radius:4px; height:8px; overflow:hidden; }
+    .activity-bar-fill  { height:100%; border-radius:4px; background:linear-gradient(90deg,#667eea,#764ba2); transition: width 0.6s ease; }
+
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+    .stat-item { text-align: center; }
+    .stat-number { font-size: 28px; font-weight: 800; color: #667eea; font-family:'Manrope',sans-serif; }
+    .stat-label  { font-size: 12px; color: #888; font-family:'Manrope',sans-serif; }
+
+    #no-data-msg { text-align:center; padding:40px 20px; color:#888; font-family:'Manrope',sans-serif; }
+  </style>
 </head>
 
 <body>
 
   <div class="container">
 
-    <!-- HEADER (SAMAKAN DENGAN HISTORY) -->
+    <!-- HEADER -->
     <header class="header">
       <div class="profile">
-        <div class="avatar"></div>
+        <div class="avatar" id="header-avatar"></div>
         <h1 class="app-title">MoodSync</h1>
       </div>
       <button class="icon-btn">🔔</button>
@@ -29,77 +60,65 @@
         <p>Rangkuman perjalananmu dalam seminggu penuh ini</p>
       </section>
 
-      <!-- ================= BACKEND READY ================= -->
-      <!-- Semua section ini bisa di-loop / di-bind dari backend -->
+      <!-- Pesan jika belum ada data -->
+      <div id="no-data-msg" style="display:none;">
+        <div style="font-size:48px; margin-bottom:12px;">📊</div>
+        <p>Belum ada data untuk ditampilkan.</p>
+        <p style="font-size:13px;">Mulai catat mood harianmu agar insights muncul di sini!</p>
+      </div>
 
-      <!-- MOOD FLOW -->
-      <section class="card">
+      <!-- MOOD FLOW — diisi dinamis dari C++ -->
+      <section class="card" id="mood-flow-card" style="display:none;">
         <div class="card-header">
           <h3>Alur Emosi</h3>
           <span class="badge">7 Hari Terakhir</span>
         </div>
+        <div class="chart-bar" id="mood-chart"></div>
+        <div class="chart-dates" id="chart-dates"></div>
+      </section>
 
-        <div class="chart-bar">
-          <!-- nanti loop -->
-          <div class="bar" style="height:40%"></div>
-          <div class="bar" style="height:60%"></div>
-          <div class="bar" style="height:35%"></div>
-          <div class="bar active" style="height:90%"></div>
-          <div class="bar" style="height:55%"></div>
-          <div class="bar active" style="height:70%"></div>
-          <div class="bar" style="height:65%"></div>
+      <!-- STATISTIK RINGKASAN -->
+      <section class="card" id="stats-card" style="display:none;">
+        <h3>Statistik Minggu Ini</h3>
+        <div class="stat-grid">
+          <div class="stat-item">
+            <div class="stat-number" id="stat-total">0</div>
+            <div class="stat-label">Catatan</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="stat-streak">0</div>
+            <div class="stat-label">Hari Berturut</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="stat-avg">-</div>
+            <div class="stat-label">Rata-rata Mood</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" id="stat-best">-</div>
+            <div class="stat-label">Aktivitas Terfavorit</div>
+          </div>
         </div>
       </section>
 
-      <!-- ACTIVITY -->
-      <section class="card">
-        <h3>Aktivitas</h3>
-
-        <div class="donut">72%</div>
-
-        <div class="metric">
-          <span>Meditation</span>
-          <span>12h</span>
-        </div>
-        <div class="metric">
-          <span>Deep Work</span>
-          <span>5h</span>
-        </div>
-        <div class="metric">
-          <span>Rest</span>
-          <span>3h</span>
-        </div>
-      </section>
-
-      <!-- SLEEP -->
-      <section class="card">
-        <h3>Sleep Quality</h3>
-        <p>8.2 / 10</p>
-        <div class="progress">
-          <span style="width:82%"></span>
-        </div>
-      </section>
-
-      <!-- MINDFULNESS -->
-      <section class="card">
-        <h3>Mindfulness Gap</h3>
-        <p>2.4 h</p>
-        <div class="progress">
-          <span style="width:40%"></span>
+      <!-- ACTIVITY — diisi dinamis dari C++ -->
+      <section class="card" id="activity-card" style="display:none;">
+        <h3>Aktivitas Minggu Ini</h3>
+        <div id="activity-list-insights">
+          <!-- diisi JS -->
         </div>
       </section>
 
       <!-- STREAK -->
-      <section class="card">
+      <section class="card" id="streak-card" style="display:none;">
         <h3>Consistency Streak</h3>
-        <p class="big-number">12</p>
-        <span>days</span>
-        <small>+3 from last week</small>
+        <p class="big-number" id="streak-big">0</p>
+        <span>hari berturut-turut</span>
+        <small id="streak-note">Mulai catat setiap hari!</small>
       </section>
 
     </main>
 
-    <!-- NAVBAR (SAMA DI SEMUA PAGE) -->
+    <!-- NAVBAR -->
     <nav class="navbar">
       <button onclick="window.location.href='today.html'">TODAY</button>
       <button onclick="window.location.href='history.html'">HISTORY</button>
@@ -108,6 +127,150 @@
     </nav>
 
   </div>
+
+<!-- WebUI JS -->
+<script src="/webui.js"></script>
+<!-- MoodSync API Bridge — IPC ke C++ -->
+<script src="js/api.js"></script>
+<script>
+  /* ──────────────────────────────────────────────────────────────────────────
+   * INSIGHTS PAGE — Data Binding IPC
+   *
+   * Binding yang digunakan:
+   *   get_insights → C++ handle_get_insights() query SQLite 7 hari terakhir:
+   *                  - mood_data: array {date, mood_level} per hari
+   *                  - top_activities: array {name, count}
+   *                  - streak: jumlah hari berturut-turut
+   *                  - avg_mood: rata-rata mood level
+   *                  - total_entries: total catatan dalam 7 hari
+   * ────────────────────────────────────────────────────────────────────────── */
+
+  const MOOD_LABEL = { 1:"Biasa", 2:"Sedih", 3:"Bahagia", 4:"Senang", 5:"Marah", 6:"Ngantuk" };
+
+  // Buat 7 hari terakhir sebagai template
+  function getLast7Days() {
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      days.push(d.toISOString().split("T")[0]);
+    }
+    return days;
+  }
+
+  function renderMoodChart(moodData) {
+    const chart  = document.getElementById("mood-chart");
+    const dates  = document.getElementById("chart-dates");
+    chart.innerHTML = "";
+    dates.innerHTML = "";
+
+    const last7 = getLast7Days();
+    // Buat map date -> mood_level dari data backend
+    const moodMap = {};
+    moodData.forEach(m => { moodMap[m.date] = m.mood_level; });
+
+    const maxMood = 6; // mood_level max
+
+    last7.forEach(date => {
+      const level = moodMap[date];
+      const heightPct = level ? Math.round((level / maxMood) * 100) : 0;
+      const d = new Date(date + "T00:00:00");
+      const dayNames = ["M","T","W","T","F","S","S"];
+      const dayName  = dayNames[d.getDay()];
+
+      const bar = document.createElement("div");
+      bar.className = `bar${level ? "" : " no-data"}`;
+      bar.style.height = `${Math.max(heightPct, 4)}%`;
+      if (level) {
+        bar.title = `${date}: ${MOOD_LABEL[level] || level}`;
+      }
+      chart.appendChild(bar);
+
+      const dateSpan = document.createElement("span");
+      dateSpan.textContent = dayName;
+      dates.appendChild(dateSpan);
+    });
+
+    document.getElementById("mood-flow-card").style.display = "block";
+  }
+
+  function renderActivities(activities) {
+    if (!activities || activities.length === 0) return;
+
+    const list = document.getElementById("activity-list-insights");
+    list.innerHTML = "";
+
+    const maxCount = activities[0].count;
+    activities.forEach(act => {
+      const pct = Math.round((act.count / maxCount) * 100);
+      list.innerHTML += `
+        <div class="activity-bar-wrap">
+          <div class="activity-bar-label">
+            <span>${act.name}</span>
+            <span>${act.count}x</span>
+          </div>
+          <div class="activity-bar-track">
+            <div class="activity-bar-fill" style="width:${pct}%"></div>
+          </div>
+        </div>
+      `;
+    });
+
+    document.getElementById("activity-card").style.display = "block";
+  }
+
+  function renderStats(data) {
+    document.getElementById("stat-total").textContent  = data.total_entries;
+    document.getElementById("stat-streak").textContent = data.streak;
+
+    const avgLabel = data.avg_mood > 0 ? MOOD_LABEL[Math.round(data.avg_mood)] || data.avg_mood.toFixed(1) : "-";
+    document.getElementById("stat-avg").textContent = avgLabel;
+
+    const bestAct = (data.top_activities && data.top_activities.length > 0)
+      ? data.top_activities[0].name : "-";
+    document.getElementById("stat-best").textContent  = bestAct;
+    document.getElementById("stats-card").style.display = "block";
+  }
+
+  function renderStreak(streak) {
+    document.getElementById("streak-big").textContent = streak;
+    document.getElementById("streak-note").textContent =
+      streak > 0
+        ? `Pertahankan terus, kamu luar biasa! 🔥`
+        : "Catat mood hari ini untuk memulai streak!";
+    document.getElementById("streak-card").style.display = "block";
+  }
+
+  // ── INISIALISASI ──────────────────────────────────────────────────────────
+  window.addEventListener("DOMContentLoaded", async () => {
+    const user = await Auth.requireAuth();
+    if (!user) return;
+
+    const avatar = document.getElementById("header-avatar");
+    avatar.textContent = user.username.charAt(0).toUpperCase();
+    avatar.style.cssText += `
+      display:flex; width:36px; height:36px; border-radius:50%;
+      background:linear-gradient(135deg,#667eea,#764ba2);
+      color:white; font-weight:700; font-size:16px;
+      align-items:center; justify-content:center;
+    `;
+
+    // ── PANGGIL BACKEND C++ via WebUI IPC ───────────────────────────────────
+    // C++ aggregasi data 7 hari dari SQLite dan menghitung semua statistik
+    const res = await Mood.getInsights();
+    // ────────────────────────────────────────────────────────────────────────
+
+    if (!res.ok || res.total_entries === 0) {
+      document.getElementById("no-data-msg").style.display = "block";
+      return;
+    }
+
+    renderMoodChart(res.mood_data);
+    renderActivities(res.top_activities);
+    renderStats(res);
+    renderStreak(res.streak);
+  });
+</script>
 
 </body>
 </html>

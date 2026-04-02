@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Daftar akun MoodSync — mulai perjalanan mood journaling-mu hari ini.">
     <link rel="stylesheet" href="css/signup.css">
-    <title>Sign Up Page</title>
-    
+    <title>Daftar Akun — MoodSync</title>
 </head>
 <body>
 
 <div class="flex-container">
     <!-- Header -->
     <div class="logo-container">
-    <div class="logo-placeholder">
-         <img src="assets/svg/Iconlast.svg" class="icon"></img>
-    </div>
+        <div class="logo-placeholder">
+            <img src="assets/svg/Iconlast.svg" class="icon" alt="MoodSync Logo">
+        </div>
     </div>
 
     <div class="header">
@@ -24,23 +24,26 @@
     <div class="container">
 
         <!-- Form -->
-        <form>
-            <label for="name">Full name</label>
-            <input id="name" type="text" placeholder="Enter your name" />
+        <form id="signup-form" onsubmit="handleRegister(event); return false;">
+            <label for="signup-name">Full name</label>
+            <input id="signup-name" type="text" placeholder="Enter your name" required />
 
-            <label for="email">Email address</label>
-            <input id="email" type="email" placeholder="example@canvas.com" />
+            <label for="signup-email">Email address</label>
+            <input id="signup-email" type="email" placeholder="example@canvas.com" required />
 
-            <label for="password">Password</label>
-            <input id="password" type="password" placeholder="Min. 8 characters" />
+            <label for="signup-password">Password</label>
+            <input id="signup-password" type="password" placeholder="Min. 8 characters" required minlength="8" />
+
+            <!-- Pesan error / sukses dari backend C++ -->
+            <p id="signup-msg" style="display:none; font-size:13px; text-align:center; margin:4px 0;"></p>
 
             <p style="text-align:center; font-size:16px; color:#555; font-family: 'Manrope'; font-weight: 400;">
                 By joining, you agree to our 
-                <a href="#" style=" font-family: 'Manrope'; font-weight: 800;">Terms of <br>Service</a> and 
-                <a href="#" style=" font-family: 'Manrope'; font-weight: 800;">Privacy Policy</a>.
+                <a href="#" style="font-family: 'Manrope'; font-weight: 800;">Terms of <br>Service</a> and 
+                <a href="#" style="font-family: 'Manrope'; font-weight: 800;">Privacy Policy</a>.
             </p>
 
-            <button type="submit" style="font-size: 20px;">Create Account</button>
+            <button id="signup-btn" type="submit" style="font-size: 20px;">Create Account</button>
         </form>
 
         <!-- Divider -->
@@ -50,10 +53,10 @@
             <div></div>
         </div>
 
-        <!-- Social Buttons -->
+        <!-- Social Buttons (placeholder) -->
         <div class="social-buttons" style="display:flex; gap:10px;">
-            <button>Google</button>
-            <button>Apple</button>
+            <button type="button">Google</button>
+            <button type="button">Apple</button>
         </div>
     </div>
 
@@ -63,6 +66,64 @@
     </div>
 
 </div>
+
+<!-- WebUI JS -->
+<script src="/webui.js"></script>
+<!-- MoodSync API Bridge — IPC ke C++ -->
+<script src="js/api.js"></script>
+<script>
+    /**
+     * PROSES REGISTER — Data Binding IPC
+     *
+     * Alur:
+     * 1. User isi form dan klik Create Account
+     * 2. JS memanggil webui.call("register", username, email, password)
+     * 3. C++ handle_register() validasi input, cek email duplikat, simpan ke SQLite
+     * 4. C++ return_string(json) → JS menerima hasilnya
+     * 5. Jika ok=true → redirect ke login.html
+     * 6. Jika ok=false → tampilkan pesan error dari C++
+     */
+    async function handleRegister(event) {
+        event.preventDefault();
+
+        const username = document.getElementById("signup-name").value.trim();
+        const email    = document.getElementById("signup-email").value.trim();
+        const password = document.getElementById("signup-password").value;
+        const btn      = document.getElementById("signup-btn");
+        const msgEl    = document.getElementById("signup-msg");
+
+        if (password.length < 8) {
+            msgEl.textContent = "Password minimal 8 karakter.";
+            msgEl.style.color = "#e74c3c";
+            msgEl.style.display = "block";
+            return;
+        }
+
+        // Reset pesan
+        msgEl.style.display = "none";
+        btn.textContent = "Membuat akun...";
+        btn.disabled = true;
+
+        // ── PANGGIL BACKEND C++ via WebUI IPC ───────────────────────────────
+        const res = await Auth.register(username, email, password);
+        // ────────────────────────────────────────────────────────────────────
+
+        btn.textContent = "Create Account";
+        btn.disabled = false;
+
+        msgEl.style.display = "block";
+
+        if (res.ok) {
+            msgEl.style.color = "#4CAF50";
+            msgEl.textContent = res.message || "Akun berhasil dibuat!";
+            // Redirect ke login setelah 1.5 detik
+            setTimeout(() => { window.location.href = "login.html"; }, 1500);
+        } else {
+            msgEl.style.color = "#e74c3c";
+            msgEl.textContent = res.message || "Gagal membuat akun.";
+        }
+    }
+</script>
 
 </body>
 </html>
