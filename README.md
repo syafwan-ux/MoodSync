@@ -28,3 +28,14 @@ cd MoodSync_version0.1
 ```bash
 python main.py
 ```
+
+# Catatan
+
+- Aplikasi ini direkomendasikan menggunakan Python versi 3.10.x.
+- Pastikan Python sudah terinstall dan dapat diakses melalui terminal (Command Prompt).
+- Jika terjadi error karena modul tidak ditemukan, jalankan perintah berikut:
+  pip install -r requirements.txt
+- Pada beberapa sistem, gunakan "python3 main.py" jika perintah "python" tidak dikenali.
+
+
+Selesai. Aplikasi seharusnya sudah dapat dijalankan dengan baik.
