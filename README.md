@@ -1,5 +1,10 @@
 # MoodSync Application
 
+## Anggota Kelompok 1
+- M. Dafa 'Izzul Iman A. (24/535342/PA/22711)
+- Hegel Al Rafli (25/575250/NPA/20024)
+- Ifham Syafwan Fikri (24/545184/PA/23161)
+
 ## Cara Menjalankan Aplikasi
 
 Untuk menjalankan aplikasi MoodSync di komputer Anda, pertama lakukan clone repository dari GitHub dengan menjalankan perintah berikut:
